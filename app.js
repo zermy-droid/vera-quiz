@@ -18,6 +18,7 @@ if (quizParam) {
    TEACHER VIEW
    ========================================================== */
 function initTeacher() {
+  const slideUrl = document.getElementById("slideUrl");
   const slideText = document.getElementById("slideText");
   const generateBtn = document.getElementById("generateBtn");
   const status = document.getElementById("status");
@@ -30,55 +31,67 @@ function initTeacher() {
 
   let currentQuizUrl = "";
 
-  generateBtn.addEventListener("click", () => {
+  generateBtn.addEventListener("click", async () => {
+    const url = slideUrl.value.trim();
     const text = slideText.value.trim();
-    if (text.length < 30) {
-      showStatus("error", "Paste at least 30 characters of slide text.");
+
+    if (!url && text.length < 30) {
+      showStatus("error", "Paste a URL or at least 30 characters of slide text.");
       return;
     }
 
     showStatus("loading", "Generating questions...");
     generateBtn.disabled = true;
 
-    setTimeout(() => {
-      try {
-        const all = buildQuestions(text);
-        if (all.length < 4) {
-          showStatus("error", "Not enough content to generate questions. Try pasting more text.");
-          generateBtn.disabled = false;
-          return;
-        }
+    try {
+      let rawText = text;
 
-        const picked = shuffle(all).slice(0, 8).map((q, i) => ({
-          id: i + 1,
-          question: q.question.length > 60 ? q.question.slice(0, 57) + "..." : q.question,
-          options: q.options.map(o => o.length > 18 ? o.slice(0, 15) + "..." : o),
-          correct: q.correct
-        }));
-
-        const encoded = encodeCompact(picked);
-        const baseUrl = window.location.origin + window.location.pathname;
-        currentQuizUrl = baseUrl + "?q=" + encoded;
-
-        showQrCode(qrImage, currentQuizUrl);
-        quizCode.textContent = "Quiz: " + picked.length + " questions";
-        qrSection.classList.remove("hidden");
-
-        questionList.innerHTML = "";
-        picked.forEach(q => {
-          const li = document.createElement("li");
-          li.textContent = q.question;
-          questionList.appendChild(li);
-        });
-        questionPreview.classList.remove("hidden");
-
-        showStatus("success", "Quiz ready! Show the QR code to your students.");
-      } catch (e) {
-        console.error(e);
-        showStatus("error", "Something went wrong. Try pasting different text.");
+      if (!rawText && url) {
+        rawText = await fetchUrlText(url);
       }
-      generateBtn.disabled = false;
-    }, 100);
+
+      if (!rawText || rawText.trim().length < 30) {
+        showStatus("error", "Could not extract text from that URL. Try pasting the text directly.");
+        generateBtn.disabled = false;
+        return;
+      }
+
+      const all = buildQuestions(rawText);
+      if (all.length < 4) {
+        showStatus("error", "Not enough content to generate questions. Try pasting more text.");
+        generateBtn.disabled = false;
+        return;
+      }
+
+      const picked = shuffle(all).slice(0, 8).map((q, i) => ({
+        id: i + 1,
+        question: q.question.length > 60 ? q.question.slice(0, 57) + "..." : q.question,
+        options: q.options.map(o => o.length > 18 ? o.slice(0, 15) + "..." : o),
+        correct: q.correct
+      }));
+
+      const encoded = encodeCompact(picked);
+      const baseUrl = window.location.origin + window.location.pathname;
+      currentQuizUrl = baseUrl + "?q=" + encoded;
+
+      showQrCode(qrImage, currentQuizUrl);
+      quizCode.textContent = "Quiz: " + picked.length + " questions";
+      qrSection.classList.remove("hidden");
+
+      questionList.innerHTML = "";
+      picked.forEach(q => {
+        const li = document.createElement("li");
+        li.textContent = q.question;
+        questionList.appendChild(li);
+      });
+      questionPreview.classList.remove("hidden");
+
+      showStatus("success", "Quiz ready! Show the QR code to your students.");
+    } catch (e) {
+      console.error(e);
+      showStatus("error", "Something went wrong. Try pasting the text directly.");
+    }
+    generateBtn.disabled = false;
   });
 
   copyLinkBtn.addEventListener("click", () => {
@@ -87,6 +100,36 @@ function initTeacher() {
       setTimeout(() => copyLinkBtn.textContent = "Copy Quiz Link", 2000);
     });
   });
+}
+
+async function fetchUrlText(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("fetch failed");
+    const html = await res.text();
+    return extractTextFromHtml(html);
+  } catch {}
+
+  const proxies = [
+    "https://corsproxy.io/?",
+    "https://api.allorigins.win/raw?url="
+  ];
+  for (const proxy of proxies) {
+    try {
+      const res = await fetch(proxy + encodeURIComponent(url));
+      if (!res.ok) continue;
+      const text = await res.text();
+      if (text.length > 50) return text;
+    } catch {}
+  }
+  return null;
+}
+
+function extractTextFromHtml(html) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const scripts = doc.querySelectorAll("script, style, noscript");
+  scripts.forEach(s => s.remove());
+  return doc.body ? doc.body.innerText : "";
 }
 
 function showStatus(type, msg) {

@@ -63,7 +63,7 @@ body {
 .muted { color: var(--muted); font-size: 14px; }
 
 /* --- Inputs --- */
-textarea, input[type="text"] {
+textarea, input[type="text"], input[type="url"] {
   width: 100%;
   padding: 12px 14px;
   border: 2px solid var(--border);
@@ -73,9 +73,32 @@ textarea, input[type="text"] {
   resize: vertical;
   transition: border-color 0.2s;
 }
-textarea:focus, input[type="text"]:focus {
+textarea:focus, input[type="text"]:focus, input[type="url"]:focus {
   outline: none;
   border-color: var(--primary);
+}
+
+.or-divider {
+  text-align: center;
+  margin: 12px 0;
+  position: relative;
+}
+.or-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border);
+}
+.or-divider span {
+  position: relative;
+  background: var(--surface);
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
 }
 
 /* --- Buttons --- */

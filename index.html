@@ -18,9 +18,11 @@
 
     <main class="container">
       <section class="card">
-        <h2>Paste your slide text</h2>
-        <p class="hint">Copy the text from your PowerPoint or Google Slides and paste it below.</p>
-        <textarea id="slideText" rows="6" placeholder="Paste your slide content here..."></textarea>
+        <h2>Paste a link or your slide text</h2>
+        <p class="hint">Paste a Google Slides, PowerPoint, or any public URL. Or paste the text directly.</p>
+        <input type="url" id="slideUrl" placeholder="https://..." />
+        <div class="or-divider"><span>or</span></div>
+        <textarea id="slideText" rows="5" placeholder="Paste your slide content here..."></textarea>
         <button id="generateBtn" class="btn btn-primary">Generate Quiz</button>
       </section>
 
