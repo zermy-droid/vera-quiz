@@ -3,88 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vera — Quiz Tool</title>
+  <title>Vera Quiz</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <header class="topbar">
+    <span class="logo-sm">V</span>
+    <span class="brand">Vera</span>
+  </header>
 
-  <!-- ===== TEACHER VIEW ===== -->
-  <div id="teacherView">
-    <header class="hero">
-      <div class="logo">V</div>
-      <h1>Vera</h1>
-      <p class="tagline">Anonymous Classroom Quiz Tool</p>
-    </header>
+  <main class="container">
+    <section id="startScreen" class="card center">
+      <h2>Ready to start?</h2>
+      <p>You have 5 minutes to answer all questions.</p>
+      <button id="startBtn" class="btn primary lg">Start Quiz</button>
+    </section>
 
-    <main class="container">
-      <section class="card">
-        <h2>Paste your slide URL</h2>
-        <p class="hint">Paste a Google Slides, PowerPoint, or any public URL.</p>
-        <input type="url" id="slideUrl" placeholder="https://..." />
-        <button id="generateBtn" class="btn btn-primary">Generate Quiz</button>
-      </section>
+    <section id="quizScreen" class="card hidden">
+      <div class="quiz-top">
+        <span id="qNum" class="qnum"></span>
+        <span id="timer" class="timer"></span>
+      </div>
+      <p id="qText" class="qtext"></p>
+      <div id="opts" class="opts"></div>
+      <div id="dots" class="dots"></div>
+      <div class="quiz-bottom">
+        <button id="nextBtn" class="btn primary">Next</button>
+        <button id="submitBtn" class="btn accent hidden">Submit</button>
+      </div>
+    </section>
 
-      <div id="status" class="status hidden"></div>
+    <section id="doneScreen" class="card center hidden">
+      <h2>Submitted!</h2>
+      <p>Your answers have been recorded. Thank you!</p>
+    </section>
 
-      <section id="qrSection" class="card qr-card hidden">
-        <h2>Scan to start quiz</h2>
-        <div class="qr-wrap">
-          <img id="qrImage" alt="QR Code" />
-        </div>
-        <p id="quizCode" class="quiz-code"></p>
-        <button id="copyLinkBtn" class="btn btn-secondary">Copy Quiz Link</button>
-        <div id="questionPreview" class="question-preview hidden">
-          <h3>Questions generated</h3>
-          <ol id="questionList"></ol>
-        </div>
-      </section>
+    <section id="errorScreen" class="card center hidden">
+      <h2>Invalid quiz link</h2>
+      <p>Ask your teacher for a new QR code.</p>
+    </section>
+  </main>
 
-      <section class="card">
-        <h2>Results</h2>
-        <p class="hint">Submissions will appear here during the quiz.</p>
-        <div id="resultsArea" class="results-area">
-          <p class="muted">No submissions yet.</p>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- ===== STUDENT VIEW ===== -->
-  <div id="studentView" class="hidden">
-    <header class="student-header">
-      <span class="logo-sm">V</span>
-      <span class="brand">Vera</span>
-    </header>
-
-    <main class="container">
-      <section id="startScreen" class="card center">
-        <h2>Ready to start?</h2>
-        <p>You have 5 minutes to answer all questions.</p>
-        <button id="startBtn" class="btn btn-primary btn-lg">Start Quiz</button>
-      </section>
-
-      <section id="quizScreen" class="card hidden">
-        <div class="quiz-top">
-          <span id="questionNum" class="question-num"></span>
-          <span id="timer" class="timer"></span>
-        </div>
-        <p id="questionText" class="question-text"></p>
-        <div id="options" class="options"></div>
-        <div id="dots" class="dots"></div>
-        <div class="quiz-bottom">
-          <button id="nextBtn" class="btn btn-primary">Next</button>
-          <button id="submitBtn" class="btn btn-accent hidden">Submit</button>
-        </div>
-      </section>
-
-      <section id="doneScreen" class="card center hidden">
-        <h2>Submitted!</h2>
-        <p>Your answers have been recorded. Thank you!</p>
-      </section>
-    </main>
-  </div>
-
-  <script src="qrcode.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
