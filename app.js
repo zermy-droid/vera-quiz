@@ -19,7 +19,6 @@ if (quizParam) {
    ========================================================== */
 function initTeacher() {
   const slideUrl = document.getElementById("slideUrl");
-  const slideText = document.getElementById("slideText");
   const generateBtn = document.getElementById("generateBtn");
   const status = document.getElementById("status");
   const qrSection = document.getElementById("qrSection");
@@ -33,25 +32,20 @@ function initTeacher() {
 
   generateBtn.addEventListener("click", async () => {
     const url = slideUrl.value.trim();
-    const text = slideText.value.trim();
 
-    if (!url && text.length < 30) {
-      showStatus("error", "Paste a URL or at least 30 characters of slide text.");
+    if (!url) {
+      showStatus("error", "Paste a slide URL first.");
       return;
     }
 
-    showStatus("loading", "Generating questions...");
+    showStatus("loading", "Fetching and generating questions...");
     generateBtn.disabled = true;
 
     try {
-      let rawText = text;
-
-      if (!rawText && url) {
-        rawText = await fetchUrlText(url);
-      }
+      const rawText = await fetchUrlText(url);
 
       if (!rawText || rawText.trim().length < 30) {
-        showStatus("error", "Could not extract text from that URL. Try pasting the text directly.");
+        showStatus("error", "Could not extract text from that URL. Make sure the link is public and accessible.");
         generateBtn.disabled = false;
         return;
       }
