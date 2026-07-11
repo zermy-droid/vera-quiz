@@ -2,59 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Vera — Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vera — Quiz Tool</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="app">
-    <div id="startScreen" class="screen">
-      <div class="brand">
-        <span class="brand-icon">V</span>
-        <h1>Vera Quiz</h1>
-        <p class="brand-sub">Answer anonymously. Results revealed live.</p>
-      </div>
-      <button id="startQuizBtn" class="btn btn-start">Start Quiz</button>
-    </div>
 
-    <div id="quizScreen" class="screen hidden">
-      <header class="quiz-header">
-        <span id="questionNum" class="q-num">Question 1 of 8</span>
-        <span id="timerDisplay" class="timer">05:00</span>
-      </header>
-      <div class="question-area">
-        <p id="questionText" class="question-text">Loading...</p>
-      </div>
-      <div id="optionsContainer" class="options-container"></div>
-      <div class="quiz-footer">
-        <span id="progressDots" class="progress-dots"></span>
-        <button id="nextBtn" class="btn btn-next">Next</button>
-        <button id="submitBtn" class="btn btn-submit hidden">Submit Anonymously</button>
-      </div>
-    </div>
+  <!-- ===== TEACHER VIEW ===== -->
+  <div id="teacherView">
+    <header class="hero">
+      <div class="logo">V</div>
+      <h1>Vera</h1>
+      <p class="tagline">Anonymous Classroom Quiz Tool</p>
+    </header>
 
-    <div id="confirmScreen" class="screen hidden">
-      <div class="brand">
-        <span class="brand-icon">V</span>
-        <h2>Submit Your Answers?</h2>
-        <p class="brand-sub">Your identity will not be recorded.</p>
-      </div>
-      <div class="confirm-actions">
-        <button id="confirmSubmitBtn" class="btn btn-submit">Yes, Submit Anonymously</button>
-        <button id="cancelSubmitBtn" class="btn btn-cancel">Go Back</button>
-      </div>
-    </div>
+    <main class="container">
+      <section class="card">
+        <h2>Paste your slide text</h2>
+        <p class="hint">Copy the text from your PowerPoint or Google Slides and paste it below.</p>
+        <textarea id="slideText" rows="6" placeholder="Paste your slide content here..."></textarea>
+        <button id="generateBtn" class="btn btn-primary">Generate Quiz</button>
+      </section>
 
-    <div id="thanksScreen" class="screen hidden">
-      <div class="brand">
-        <span class="brand-icon">V</span>
-        <h2>Submitted!</h2>
-        <p class="brand-sub">Your answers have been recorded anonymously.</p>
-        <p class="brand-sub">You may now close this page.</p>
-      </div>
-      <div class="checkmark">&#10003;</div>
-    </div>
+      <div id="status" class="status hidden"></div>
+
+      <section id="qrSection" class="card qr-card hidden">
+        <h2>Scan to start quiz</h2>
+        <div class="qr-wrap">
+          <img id="qrImage" alt="QR Code" />
+        </div>
+        <p id="quizCode" class="quiz-code"></p>
+        <button id="copyLinkBtn" class="btn btn-secondary">Copy Quiz Link</button>
+        <div id="questionPreview" class="question-preview hidden">
+          <h3>Questions generated</h3>
+          <ol id="questionList"></ol>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Results</h2>
+        <p class="hint">Submissions will appear here during the quiz.</p>
+        <div id="resultsArea" class="results-area">
+          <p class="muted">No submissions yet.</p>
+        </div>
+      </section>
+    </main>
   </div>
+
+  <!-- ===== STUDENT VIEW ===== -->
+  <div id="studentView" class="hidden">
+    <header class="student-header">
+      <span class="logo-sm">V</span>
+      <span class="brand">Vera</span>
+    </header>
+
+    <main class="container">
+      <section id="startScreen" class="card center">
+        <h2>Ready to start?</h2>
+        <p>You have 5 minutes to answer all questions.</p>
+        <button id="startBtn" class="btn btn-primary btn-lg">Start Quiz</button>
+      </section>
+
+      <section id="quizScreen" class="card hidden">
+        <div class="quiz-top">
+          <span id="questionNum" class="question-num"></span>
+          <span id="timer" class="timer"></span>
+        </div>
+        <p id="questionText" class="question-text"></p>
+        <div id="options" class="options"></div>
+        <div id="dots" class="dots"></div>
+        <div class="quiz-bottom">
+          <button id="nextBtn" class="btn btn-primary">Next</button>
+          <button id="submitBtn" class="btn btn-accent hidden">Submit</button>
+        </div>
+      </section>
+
+      <section id="doneScreen" class="card center hidden">
+        <h2>Submitted!</h2>
+        <p>Your answers have been recorded. Thank you!</p>
+      </section>
+    </main>
+  </div>
+
+  <script src="qrcode.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
